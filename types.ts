@@ -82,8 +82,6 @@ type DeepReadonlyTest = DeepReadonly<TestObject>;
 
  Args<T> is indeed a fast way to extract all the parameter types from a function and turn them into a tuple type. It's like having TypeScript automatically generate the parameter types for you.
 
-
-
 Args<T> is there to extract and validate the arguments that a function expects. It tells you:
 - What arguments are allowed
 - What types they should be
@@ -122,7 +120,9 @@ You discovered the most important rule of UnionToIntersection:
 
 ✅ Works great when properties don't conflict -> if A and B have different properties, then it will merge them into one type
 
-❌ Creates never when properties conflict -> if A and B have the same property, then it will create never
+❌ Creates never when properties conflict -> if A and B have the same property with different types, then it will create never
+
+ 
 
 🎯 Design your types to avoid conflicts -> if A and B have the same property, then you can use UnionToIntersection to merge them into one type
 
@@ -154,6 +154,12 @@ type IntersectionType = UnionToIntersection<UnionType>;
 
 type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
+/*
+  DeepPartial makes ALL properties optional, so you can create objects with only the fields you want to provide.
+
+
+ x§ DeepPartial<T> is a type transformer - it takes any type (interface, type alias, etc.) and automatically converts it to a partial version. You don't need to modify your original interface at all!
+*/
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object
     ? T[P] extends Function
@@ -170,6 +176,9 @@ type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K;
 }[keyof T];
 
+/*
+  PickFunctions<T> is a type transformer - it takes any type (interface, type alias, etc.) and automatically picks all the function properties. You don't need to modify your original interface at all!
+*/
 type PickFunctions<T> = Pick<T, FunctionPropertyNames<T>>;
 
 type PickNonFunctions<T> = Pick<T, NonFunctionPropertyNames<T>>;
