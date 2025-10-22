@@ -46,10 +46,8 @@ const readonlyUser: DeepReadonly<typeof user> = user;
    readonlyUser.hobbies[0] = "writing";           // Error!
 
 
-   
+
   const is about reference immutability, while DeepReadonly is about value immutability. They work together perfectly - you typically use both
-
-
 
 */
 type DeepReadonly<T> = {
@@ -80,6 +78,11 @@ type DeepReadonlyTest = DeepReadonly<TestObject>;
 /*
 
   2. Args<T> - Extract Function Arguments using infer
+
+
+ Args<T> is indeed a fast way to extract all the parameter types from a function and turn them into a tuple type. It's like having TypeScript automatically generate the parameter types for you.
+
+
 
 Args<T> is there to extract and validate the arguments that a function expects. It tells you:
 - What arguments are allowed
@@ -113,6 +116,17 @@ Means: "This can be A OR B OR C"
 type Intersection = A & B & C;
 
 Means: "This must be A AND B AND C at the same time"
+
+
+You discovered the most important rule of UnionToIntersection:
+
+✅ Works great when properties don't conflict -> if A and B have different properties, then it will merge them into one type
+
+❌ Creates never when properties conflict -> if A and B have the same property, then it will create never
+
+🎯 Design your types to avoid conflicts -> if A and B have the same property, then you can use UnionToIntersection to merge them into one type
+
+
 */
 
 type UnionToIntersectionHelper<U> = (
